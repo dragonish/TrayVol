@@ -46,7 +46,7 @@ TrayIcon::TrayIcon(HINSTANCE hInstance) {
 	// Create context menu
 	hMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING, 2, L"GitHub");
-	AppendMenu(hMenu, MF_GRAYED, 3, L"Version: 1.0.0");
+	AppendMenu(hMenu, MF_GRAYED, 3, L"Version: 1.1.0");
 	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(hMenu, sr->GetStartupState() ? MF_CHECKED : MF_UNCHECKED, 4, L"Auto-start");
 	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
