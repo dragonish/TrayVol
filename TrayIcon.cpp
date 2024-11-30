@@ -179,7 +179,7 @@ LRESULT CALLBACK TrayIcon::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			PostQuitMessage(0);
 			break;
 		case 2:
-			ShellExecute(NULL, L"open", L"https://github.com/dragonish/TrayIcon", NULL, NULL, SW_SHOWNORMAL);
+			ShellExecute(NULL, L"open", L"https://github.com/dragonish/TrayVol", NULL, NULL, SW_SHOWNORMAL);
 			break;
 		}
 		break;
