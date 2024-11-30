@@ -30,11 +30,15 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="AudioVolumeCallback.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RegistryHandler.cpp" />
+    <ClCompile Include="StartupRegistry.cpp" />
     <ClCompile Include="TrayIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioSession.h" />
+    <ClInclude Include="RegistryHandler.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="StartupRegistry.h" />
     <ClInclude Include="TrayIcon.h" />
   </ItemGroup>
   <ItemGroup>

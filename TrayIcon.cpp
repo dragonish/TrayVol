@@ -36,10 +36,19 @@ TrayIcon::TrayIcon(HINSTANCE hInstance) {
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	nid.uCallbackMessage = WM_APP + 1; // Set a custom message ID for tray notifications
 
+	hCurrentIcon = NULL;
+
+	TCHAR exePath[MAX_PATH];
+	GetModuleFileName(NULL, exePath, MAX_PATH);
+
+	sr = new StartupRegistry(L"TrayVol", exePath);
+
 	// Create context menu
 	hMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING, 2, L"GitHub");
 	AppendMenu(hMenu, MF_GRAYED, 3, L"Version: 1.0.0");
+	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hMenu, sr->GetStartupState() ? MF_CHECKED : MF_UNCHECKED, 4, L"Auto-start");
 	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(hMenu, MF_STRING, 1, L"Exit");
 }
@@ -163,6 +172,27 @@ void TrayIcon::ShowContextMenu() {
 	TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_BOTTOMALIGN | TPM_RIGHTBUTTON, pt.x, pt.y, 0, nid.hWnd, NULL);
 }
 
+void TrayIcon::ChangeStartup() {
+	if (sr->GetStartupState()) {
+		if (sr->RemoveStartup()) {
+			CheckMenuItem(hMenu, 4, MF_UNCHECKED);
+		}
+		else {
+			MessageBox(NULL, L"Unable to remove startup configuration", L"Error", MB_OK);
+			return;
+		}
+	}
+	else {
+		if (sr->SetStartup()) {
+			CheckMenuItem(hMenu, 4, MF_CHECKED);
+		}
+		else {
+			MessageBox(NULL, L"Unable to set startup on boot", L"Error", MB_OK);
+			return;
+		}
+	}
+}
+
 LRESULT CALLBACK TrayIcon::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
 	case WM_APP + 1: // Custom message for tray icon notifications
@@ -180,6 +210,12 @@ LRESULT CALLBACK TrayIcon::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			break;
 		case 2:
 			ShellExecute(NULL, L"open", L"https://github.com/dragonish/TrayVol", NULL, NULL, SW_SHOWNORMAL);
+			break;
+		case 4:
+			TrayIcon* trayIcon = reinterpret_cast<TrayIcon*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+			if (trayIcon) {
+				trayIcon->ChangeStartup();
+			}
 			break;
 		}
 		break;

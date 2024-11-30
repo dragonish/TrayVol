@@ -27,6 +27,12 @@
     <ClCompile Include="AudioVolumeCallback.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RegistryHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StartupRegistry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TrayIcon.h">
@@ -36,6 +42,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegistryHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StartupRegistry.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
