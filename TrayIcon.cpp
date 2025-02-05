@@ -1,6 +1,8 @@
 #include "TrayIcon.h"
 #include <strsafe.h>
 
+#pragma comment(lib, "version.lib")
+
 TrayIcon::TrayIcon(HINSTANCE hInstance) {
 	// Registration window class
 	const wchar_t CLASS_NAME[] = L"TrayIconWindowClass";
@@ -45,8 +47,9 @@ TrayIcon::TrayIcon(HINSTANCE hInstance) {
 
 	// Create context menu
 	hMenu = CreatePopupMenu();
+	std::wstring versionStr = GetVersionString();
 	AppendMenu(hMenu, MF_STRING, 2, L"GitHub");
-	AppendMenu(hMenu, MF_GRAYED, 3, L"Version: 1.1.0");
+	AppendMenu(hMenu, MF_GRAYED, 3, (L"Version: " + versionStr).c_str());
 	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(hMenu, sr->GetStartupState() ? MF_CHECKED : MF_UNCHECKED, 4, L"Auto-start");
 	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
@@ -191,6 +194,33 @@ void TrayIcon::ChangeStartup() {
 			return;
 		}
 	}
+}
+
+wstring TrayIcon::GetVersionString() {
+	DWORD verHandle = 0;
+	DWORD verSize = GetFileVersionInfoSize(L"TrayVol.exe", &verHandle);
+
+	if (verSize == 0) {
+		return L"Unknown";
+	}
+
+	std::vector<BYTE> verData(verSize);
+	if (!GetFileVersionInfo(L"TrayVol.exe", verHandle, verSize, verData.data())) {
+		return L"Unknown";
+	}
+
+	VS_FIXEDFILEINFO* fileInfo;
+	UINT fileInfoSize;
+
+	if (!VerQueryValue(verData.data(), L"\\", (LPVOID*)&fileInfo, &fileInfoSize)) {
+		return L"Unknown";
+	}
+
+	int major = HIWORD(fileInfo->dwFileVersionMS);
+	int minor = LOWORD(fileInfo->dwFileVersionMS);
+	int build = HIWORD(fileInfo->dwFileVersionLS);
+
+	return std::to_wstring(major) + L"." + std::to_wstring(minor) + L"." + std::to_wstring(build);
 }
 
 LRESULT CALLBACK TrayIcon::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {

@@ -1,6 +1,7 @@
 #ifndef TRAYICON_H
 #define TRAYICON_H
 
+#include <vector>
 #include <windows.h>
 #include <shellapi.h>
 #include <gdiplus.h>
@@ -25,6 +26,7 @@ private:
 
 	HICON CreateIconWithText(int volume, BOOL isMuted);
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPAram);
+	wstring GetVersionString();
 };
 
 #endif // TRAYICON_H
