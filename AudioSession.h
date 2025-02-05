@@ -22,10 +22,20 @@ private:
 	AudioManager* audioManager;
 };
 
-class AudioManager {
+class AudioManager : public IMMNotificationClient {
 public:
 	using VolumeChangeCallback = std::function<void(int, BOOL)>;
 	VolumeChangeCallback onVolumeChange;
+
+	// IMMNotificationClient methods
+	HRESULT STDMETHODCALLTYPE OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR pwstrDeviceId) override;
+	HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(LPCWSTR pwstrDeviceId, DWORD dwNewState) override;
+	HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR pwstrDeviceId) override;
+	HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR pwstrDeviceId) override;
+	HRESULT STDMETHODCALLTYPE OnPropertyValueChanged(LPCWSTR pwstrDeviceId, const PROPERTYKEY key) override;
+	HRESULT STDMETHODCALLTYPE QueryInterface(const IID& riid, void** ppvObject) override;
+	ULONG STDMETHODCALLTYPE AddRef() override;
+	ULONG STDMETHODCALLTYPE Release() override;
 
 	AudioManager();
 	~AudioManager();
@@ -38,6 +48,9 @@ private:
 	IMMDevice* device;
 	IAudioEndpointVolume* audioEndpointVolume;
 	AudioVolumeCallback* volumeCallback;
+
+	void RegisterForNotifications();
+	void UnregisterForNotifications();
 };
 
 #endif // AUDIOSESSION_H
